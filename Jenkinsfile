@@ -1,6 +1,7 @@
 pipeline {
     agent any
     tools { nodejs "nodejs" }
+    workspace { dir('/home/ameni/jenkins_workspace') { } }
     environment {
         SERVER_USER = 'ameni'
         SERVER_IP = '192.168.45.138'
