@@ -22,8 +22,8 @@ pipeline {
                         sh 'ls -lrt'
                         sh 'pwd'
                         env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
-                        sh 'npm install' // لازم  تكون  في  نفس  الـ  indentation  متاع  السطر  اللي  قبلها
-                        sh 'npm run build' // لازم  تكون  في  نفس  الـ  indentation  متاع  السطر  اللي  قبلها
+                        sh 'npm install' 
+                        sh 'npm run build' 
                     } 
                 }
             }
@@ -50,14 +50,14 @@ pipeline {
         }
       stage('Deploy Backend') {
         steps {
-        // نستعملو  sshPublisher  باش  نبعثو  الملفات  للـ  server
+        // nesta3mlo sshPublisher bch neb3th les dossier l serveur
          sshPublisher(
             publishers: [
                 sshPublisherDesc(
-                    configName: 'git (Clé SSH pour dépôt GitHub)', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
+                    configName: 'git (Clé SSH pour dépôt GitHub)', 
                     transfers: [
                         sshTransfer(
-                            sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", //  غيّر  هذي  إن  كان  الـ  path  متاع  الـ  build  artifacts  مختلف
+                            sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", 
                             removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/",
                             remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}",
                             execCommand: """
