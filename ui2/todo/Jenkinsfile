@@ -2,25 +2,24 @@ pipeline {
     agent any
     tools { nodejs "nodejs" }
     environment {
-    SERVER_USER = 'ameni'
-    SERVER_IP = '192.168.45.138'
-    FRONTEND_DIR = 'ui2/todo'
-    BACKEND_DIR = 'api/WebApplication1'
-   // BROWSER = 'Firefox'
-
-  }
+        SERVER_USER = 'ameni'
+        SERVER_IP = '192.168.45.138'
+        FRONTEND_DIR = 'ui2/todo'
+        BACKEND_DIR = 'api/WebApplication1'
+        PROJECT_DIR = 'projettt/stage2' 
+    }
     stages {
         stage('Checkout') {
             steps {
-                // Clone the repository
-                git branch: 'main', url: 'git@github.com:amenid/stage2.git'
+                dir('/home/ameni/${PROJECT_DIR}') { 
+                    git branch: 'main', url: 'git@github.com:amenid/stage2.git'
+                }
             }
         }
         stage('Build FRONT') {
             steps {
                 script {
-                    // Build Angular
-                    dir('ui2/todo') {
+                    dir("${PROJECT_DIR}/${FRONTEND_DIR}") { 
                         sh 'ls'
                         sh 'pwd'
                         sh 'npm install'
@@ -32,7 +31,7 @@ pipeline {
         stage('Start Application') {
             steps {
                 script {
-                    dir('ui2/todo') {
+                    dir("${PROJECT_DIR}/${FRONTEND_DIR}") { 
                         sh 'ng serve --host 0.0.0.0 --port 4200 &'
                     }
                 }
@@ -41,8 +40,7 @@ pipeline {
         stage('Build Back') {
             steps {
                 script {
-                    // Build .NET Core
-                    dir('api/WebApplication1') {
+                    dir("${PROJECT_DIR}/${BACKEND_DIR}") {  
                         sh 'ls'
                         sh 'pwd'
                         sh 'dotnet build WebApplication1.sln'
@@ -50,50 +48,19 @@ pipeline {
                 }
             }
         }
-      /*  stage('Test') {
+        stage('Deploy Backend') {
             steps {
-                script {
-                    // Test Angular
-                    dir('ui2/todo') {
-                        sh 'npx jest'
-                    }
-                    // Test .NET Core
-                  /*  dir('api/WebApplication1') {
-                        sh 'dotnet test WebApplication1.sln'
-                    }
+                sshAgent(['git (Clé SSH pour dépôt GitHub)']) {
+                    sh """
+                        ssh $SERVER_USER@$SERVER_IP "
+                            cd /home/$SERVER_USER/projettt/stage2/$BACKEND_DIR
+                            dotnet restore
+                            dotnet build
+                            pm2 restart projettt || pm2 start npm --name projettt -- start
+                        "
+                    """
                 }
             }
-        }*/
-     /*  stage('Deploy Frontend') {
-      steps {
-        sshagent(['git (Clé SSH pour dépôt GitHub)']) {
-          sh """
-            ssh $SERVER_USER@$SERVER_IP "
-              set -x 
-              cd /home/$SERVER_USER/projettt/stage2/$FRONTEND_DIR
-              git pull origin main
-              npm install
-              npm run build
-            "
-          """
         }
-      }
     }
-*/
-    stage('Deploy Backend') {
-      steps {
-        sshAgent(['git (Clé SSH pour dépôt GitHub)']) {
-          sh """
-            ssh $SERVER_USER@$SERVER_IP "
-              cd /home/$SERVER_USER/projettt/stage2/$BACKEND_DIR
-              git pull origin main
-              dotnet restore
-              dotnet build
-              pm2 restart projettt || pm2 start npm --name projettt -- start
-            "
-          """
-        }
-      }
-    }
-  }
 }
