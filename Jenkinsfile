@@ -48,29 +48,31 @@ pipeline {
                 }
             }
         }
-       stage('Deploy Backend') {
-            steps {
-                // نستعملو  sshPublisher  باش  نبعثو  الملفات  للـ  server
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'git (Clé SSH pour dépôt GitHub)', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", //  غيّر  هذي  إن  كان  الـ  path  متاع  الـ  build  artifacts  مختلف
-                                    removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/", 
-                                    remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}", 
-                                    execCommand: """
-                                        dotnet restore
-                                        dotnet build
-                                        pm2 restart projettt || pm2 start node --name projettt -- start
-                                    """
-                                )
-                            ]
+      stage('Deploy Backend') {
+        steps {
+        // نستعملو  sshPublisher  باش  نبعثو  الملفات  للـ  server
+         sshPublisher(
+            publishers: [
+                sshPublisherDesc(
+                    configName: 'git (Clé SSH pour dépôt GitHub)', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
+                    transfers: [
+                        sshTransfer(
+                            sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", //  غيّر  هذي  إن  كان  الـ  path  متاع  الـ  build  artifacts  مختلف
+                            removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/",
+                            remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}",
+                            execCommand: """
+                                cd /home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}
+                                dotnet restore
+                                dotnet build
+                                pm2 restart projettt || pm2 start node --name projettt -- start
+                            """
                         )
                     ]
                 )
-            }
-        }
+            ]
+        )
+    }
+}
+
     }
 }
