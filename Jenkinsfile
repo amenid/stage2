@@ -15,17 +15,16 @@ pipeline {
                git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
             }
         }
-   stage('Build FRONT') {
+        stage('Build FRONT') {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                         sh 'ls -lrt'
                         sh 'pwd'
                         env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
-                            sh 'npm install'
-                            sh 'npm run build'
-                        } 
-                    }
+                        sh 'npm install' // لازم  تكون  في  نفس  الـ  indentation  متاع  السطر  اللي  قبلها
+                        sh 'npm run build' // لازم  تكون  في  نفس  الـ  indentation  متاع  السطر  اللي  قبلها
+                    } 
                 }
             }
         }
