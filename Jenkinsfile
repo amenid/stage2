@@ -49,26 +49,15 @@ pipeline {
         }
         stage('Deploy Backend') {
             steps {
-                sshPublisher(
-                    publishers: [
-                        sshPublisherDesc(
-                            configName: 'git (Clé SSH pour dépôt GitHub)', 
-                            transfers: [
-                                sshTransfer(
-                                    sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", 
-                                    removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/",
-                                    remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}",
-                                    execCommand: """
-                                        cd /home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}
-                                        dotnet restore
-                                        dotnet build
-                                        pm2 restart projettt || pm2 start node --name projettt -- start
-                                    """
-                                )
-                            ]
-                        )
-                    ]
-                )
+                script {
+                    dir("${WORKSPACE}/${BACKEND_DIR}") {
+                        sh """
+                            dotnet restore
+                            dotnet build
+                            pm2 restart projettt || pm2 start node --name projettt -- start
+                        """
+                    }
+                }
             }
         }
     }
