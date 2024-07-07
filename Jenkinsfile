@@ -1,8 +1,6 @@
 pipeline {
     agent any
-tools {
-    nodejs 'nodejs' 
-}
+
     environment {
         SERVER_USER = 'ameni'
         SERVER_IP = '192.168.45.138'
@@ -17,14 +15,16 @@ tools {
                git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
             }
         }
-        stage('Build FRONT') {
+   stage('Build FRONT') {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                         sh 'ls -lrt'
                         sh 'pwd'
-                        sh 'npm install'
-                        sh 'npm run build'
+                        withEnv(['PATH+NODEJS=/usr/local/bin']) { 
+                            sh 'npm install'
+                            sh 'npm run build'
+                        } 
                     }
                 }
             }
