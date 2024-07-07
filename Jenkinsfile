@@ -11,8 +11,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-               // نعملو checkout مباشرة للـ workspace
-               git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
+                git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
             }
         }
         stage('Build FRONT') {
@@ -48,31 +47,29 @@ pipeline {
                 }
             }
         }
-      stage('Deploy Backend') {
-        steps {
-        // nesta3mlo sshPublisher bch neb3th les dossier l serveur
-         sshPublisher(
-            publishers: [
-                sshPublisherDesc(
-                    configName: 'git (Clé SSH pour dépôt GitHub)', 
-                    transfers: [
-                        sshTransfer(
-                            sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", 
-                            removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/",
-                            remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}",
-                            execCommand: """
-                                cd /home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}
-                                dotnet restore
-                                dotnet build
-                                pm2 restart projettt || pm2 start node --name projettt -- start
-                            """
+        stage('Deploy Backend') {
+            steps {
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'git (Clé SSH pour dépôt GitHub)', 
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", 
+                                    removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/",
+                                    remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}",
+                                    execCommand: """
+                                        cd /home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}
+                                        dotnet restore
+                                        dotnet build
+                                        pm2 restart projettt || pm2 start node --name projettt -- start
+                                    """
+                                )
+                            ]
                         )
                     ]
                 )
-            ]
-        )
-    }
-}
-
+            }
+        }
     }
 }
