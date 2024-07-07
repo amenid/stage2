@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest"
   },
-    "babel": {
+  "babel": {
     "presets": [
       "@babel/preset-env",
       "@babel/preset-typescript"
