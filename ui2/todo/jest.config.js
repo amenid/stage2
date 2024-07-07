@@ -1,11 +1,11 @@
 module.exports = {
-preset: '/home/ameni/projettt/stage2/ui2/todo/node_modules/jest-preset-angular/presets/defaults/jest-preset.js',
+  preset: 'jest-preset-angular/setup-jest',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
-  testEnvironment: 'jsdom', 
+  testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular/out/config/presets/defaults/transform', 
+    '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
   transformIgnorePatterns: [
-    'node_modules/(?!.*\\.mjs$)' 
+    'node_modules/(?!.*\\.mjs$)'
   ],
 };
