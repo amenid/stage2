@@ -48,18 +48,28 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Backend') {
+       stage('Deploy Backend') {
             steps {
-                sshAgent(['git (Clé SSH pour dépôt GitHub)']) {
-                    sh """
-                        ssh $SERVER_USER@$SERVER_IP "
-                            cd /home/$SERVER_USER/$PROJECT_DIR/$BACKEND_DIR 
-                            dotnet restore
-                            dotnet build
-                            pm2 restart projettt || pm2 start node --name projettt -- start
-                        "
-                    """
-                }
+                // نستعملو  sshPublisher  باش  نبعثو  الملفات  للـ  server
+                sshPublisher(
+                    publishers: [
+                        sshPublisherDesc(
+                            configName: 'YOUR_SSH_SERVER_CONFIG', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
+                            transfers: [
+                                sshTransfer(
+                                    sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", //  غيّر  هذي  إن  كان  الـ  path  متاع  الـ  build  artifacts  مختلف
+                                    removePrefix: "${BACKEND_DIR}/bin/Debug/net8.0/", 
+                                    remoteDirectory: "/home/${SERVER_USER}/${PROJECT_DIR}/${BACKEND_DIR}", 
+                                    execCommand: """
+                                        dotnet restore
+                                        dotnet build
+                                        pm2 restart projettt || pm2 start node --name projettt -- start
+                                    """
+                                )
+                            ]
+                        )
+                    ]
+                )
             }
         }
     }
