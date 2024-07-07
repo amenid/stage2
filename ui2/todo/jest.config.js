@@ -1,5 +1,5 @@
 module.exports = {
-  preset: 'jest-preset-angular/out/config/presets/defaults', 
+preset: '/home/ameni/projettt/stage2/ui2/todo/node_modules/jest-preset-angular/presets/defaults/jest-preset.js',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   testEnvironment: 'jsdom', 
   transform: {
