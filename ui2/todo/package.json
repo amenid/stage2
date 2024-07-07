@@ -8,6 +8,12 @@
     "watch": "ng build --watch --configuration development",
     "test": "jest"
   },
+    "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-typescript"
+    ]
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^18.0.0",
