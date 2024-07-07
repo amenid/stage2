@@ -54,7 +54,7 @@ pipeline {
                 sshPublisher(
                     publishers: [
                         sshPublisherDesc(
-                            configName: 'YOUR_SSH_SERVER_CONFIG', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
+                            configName: 'ameni-server', //  غيّر  هذي  بإسم  الـ  configuration  متاع  الـ  server  متاعك
                             transfers: [
                                 sshTransfer(
                                     sourceFiles: "${BACKEND_DIR}/bin/Debug/net8.0/*", //  غيّر  هذي  إن  كان  الـ  path  متاع  الـ  build  artifacts  مختلف
