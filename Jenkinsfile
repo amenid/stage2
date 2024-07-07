@@ -1,7 +1,8 @@
 pipeline {
     agent any
-    tools { nodejs "nodejs" } 
-
+tools {
+    nodejs 'nodejs' 
+}
     environment {
         SERVER_USER = 'ameni'
         SERVER_IP = '192.168.45.138'
