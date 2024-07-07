@@ -21,7 +21,7 @@ pipeline {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                         sh 'ls -lrt'
                         sh 'pwd'
-                        withEnv(['PATH+NODEJS=/usr/local/bin']) { 
+                        env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
                             sh 'npm install'
                             sh 'npm run build'
                         } 
@@ -57,7 +57,7 @@ pipeline {
                             cd /home/$SERVER_USER/$PROJECT_DIR/$BACKEND_DIR 
                             dotnet restore
                             dotnet build
-                            pm2 restart projettt || pm2 start npm --name projettt -- start
+                            pm2 restart projettt || pm2 start node --name projettt -- start
                         "
                     """
                 }
