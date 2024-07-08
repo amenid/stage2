@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TodoService } from './todo.service';
+import { environment } from './environment';
+
 
 @Component({
   selector: 'app-root',
@@ -23,6 +25,8 @@ export class AppComponent {
 
   ngOnInit() {
     this.getTasks();
+      console.log(environment.apiUrl); 
+
   }
 
   getTasks() {
@@ -46,7 +50,7 @@ export class AppComponent {
 
   startEditing(taskId: number, task: string) {
     this.editingTaskId = taskId;
-    this.updatedTaskValue = task; //  نستعملو  الـ  variable  الجديد  هنا
+    this.updatedTaskValue = task;
   }
 
   updateTask(taskId: number) { 
@@ -56,4 +60,5 @@ export class AppComponent {
       this.editingTaskId = null; 
     });
   }
+
 }
