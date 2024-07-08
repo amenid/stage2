@@ -6,7 +6,7 @@ pipeline {
         SERVER_IP = '192.168.45.138'
         FRONTEND_DIR = 'ui2/todo'
         BACKEND_DIR = 'api/WebApplication1'
-        PROJECT_DIR = 'projettt/stage2' 
+        PROJECT_DIR = 'projettt/stage2'   
     }
     stages {
         stage('Checkout') {
