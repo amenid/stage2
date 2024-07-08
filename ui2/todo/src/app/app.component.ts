@@ -25,6 +25,8 @@ export class AppComponent {
 
   ngOnInit() {
     this.getTasks();
+      console.log(environment.apiUrl); 
+
   }
 
   getTasks() {
@@ -58,6 +60,5 @@ export class AppComponent {
       this.editingTaskId = null; 
     });
   }
-  console.log(environment.apiUrl); // Imprime l'URL de l'API dans la console
 
 }
