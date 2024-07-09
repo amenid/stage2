@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage('Start Application') {
+        stage('Deploy Backend') {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
