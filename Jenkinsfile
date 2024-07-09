@@ -56,7 +56,6 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/${BACKEND_DIR}") {
-                        // Vérifier et installer PM2 si nécessaire
                         sh """
                             if ! command -v pm2 > /dev/null 2>&1; then
                                 npm install pm2 -g
