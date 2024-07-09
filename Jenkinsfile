@@ -8,12 +8,14 @@ pipeline {
         BACKEND_DIR = 'api/WebApplication1'
         PROJECT_DIR = 'projettt/stage2'   
     }
+
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
             }
         }
+
         stage('Build FRONT') {
             steps {
                 script {
@@ -27,6 +29,7 @@ pipeline {
                 }
             }
         }
+
         stage('Start Application') {
             steps {
                 script {
@@ -36,6 +39,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build Back') {
             steps {
                 script {
@@ -47,14 +51,19 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy Backend') {
             steps {
                 script {
                     dir("${WORKSPACE}/${BACKEND_DIR}") {
+                        // Vérifier et installer PM2 si nécessaire
                         sh """
+                            if ! command -v pm2 > /dev/null 2>&1; then
+                                npm install pm2 -g
+                            fi
                             dotnet restore
                             dotnet build
-                            pm2 restart projettt || pm2 start node --name projettt -- start
+                            pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
                         """
                     }
                 }
