@@ -21,7 +21,7 @@ pipeline {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                         sh 'ls -lrt'
-                        sh 'pwd'
+                        sh 'pwd'  
                         env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
                         sh 'npm install' 
                         sh 'npm run build' 
