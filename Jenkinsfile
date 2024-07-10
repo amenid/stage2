@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('Build FRONT') {
+        stage('Build Frontend') {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
