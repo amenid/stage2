@@ -39,7 +39,7 @@ pipeline {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") {
                             def serveInstalled = sh(script: 'if [ -x "$(command -v serve)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
                             if (serveInstalled == "no") {
-                                sh 'npm install -g serve'
+                                sh 'sudo npm install -g serve'
                             }
                             sh 'npx serve --host 0.0.0.0 --port 4200 &'
                             sleep 10
@@ -69,7 +69,7 @@ pipeline {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh """
                                 if ! command -v pm2 > /dev/null 2>&1; then
-                                    npm install pm2 -g
+                                    sudo npm install pm2 -g
                                 fi
                                 dotnet restore
                                 pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
