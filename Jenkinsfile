@@ -25,6 +25,7 @@ pipeline {
                         env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
                         sh 'npm install' 
                         sh 'npm run build' 
+                        sh 'ls -lrt dist/todo' // Vérifiez le contenu du répertoire dist/todo
                     } 
                 }
             }
@@ -41,9 +42,10 @@ pipeline {
                             sh 'npm install http-server --save-dev'
                         }
                         // Utiliser http-server installé localement
-                        sh './node_modules/.bin/http-server -p 4200 -c-1 dist &'
+                        sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
                         // Attendre quelques secondes pour que le serveur démarre
                         sleep 10
+                        sh 'curl -I http://localhost:4200' // Vérifiez que le serveur est accessible
                     }
                 }
             }
