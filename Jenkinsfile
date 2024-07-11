@@ -39,7 +39,7 @@ pipeline {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") {
                             def serveInstalled = sh(script: 'if [ -x "$(command -v serve)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
                             if (serveInstalled == "no") {
-                                sh 'sudo npm install -g serve'
+                                sh 'npm install serve'
                             }
                             sh 'serve --host 0.0.0.0 --port 4200 &'
                             sleep 10
@@ -50,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Build Back') { 
+        stage('Build Back') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
@@ -67,13 +67,13 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
-                            sh """
+                            sh '''
                                 if ! command -v pm2 > /dev/null 2>&1; then
                                     npm install pm2 -g
                                 fi
                                 dotnet restore
                                 pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
-                            """
+                            '''
                         }
                     }
                 }
