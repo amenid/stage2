@@ -67,7 +67,6 @@ pipeline {
                                 npm install pm2 -g
                             fi
                             dotnet restore
-                            dotnet build
                             pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
                         """
                     }
