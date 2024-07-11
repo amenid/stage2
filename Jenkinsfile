@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                        sh 'ng serve --host 0.0.0.0 --port 4200 &'
+                        sh 'serve --host 0.0.0.0 --port 4200 &'
                     }
                 }
             }
