@@ -45,7 +45,8 @@ pipeline {
                         sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
                         // Attendre quelques secondes pour que le serveur démarre
                         sleep 10
-                        sh 'curl -I http://localhost:4200' // Vérifiez que le serveur est accessible
+                        // Vérifier que le serveur est accessible
+                        sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
                     }
                 }
             }
