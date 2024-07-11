@@ -34,7 +34,9 @@ pipeline {
             steps {
                 script {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                        sh 'serve --host 0.0.0.0 --port 4200 &'
+                       // sh 'serve --host 0.0.0.0 --port 4200 &'
+                        sh 'npm install -g http-server'
+                        sh 'http-server -p 4200 -c-1'
                     }
                 }
             }
