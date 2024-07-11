@@ -37,9 +37,11 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                            // Install serve locally within the project directory
-                            sh 'npm install serve'
-                            sh 'npx serve --host 0.0.0.0 --port 4200 &'
+                            // Install serve locally within the project directory (optional)
+                            // sh 'npm install serve'
+
+                            // Use the full path to npx if npx is not available globally
+                            sh '/path/to/npx serve --host 0.0.0.0 --port 4200 &'
                             sleep 10
                             sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
                         }
