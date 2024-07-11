@@ -36,7 +36,14 @@ pipeline {
                     dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                        // sh 'serve --host 0.0.0.0 --port 4200 &'
                         //sh 'npm install http-server'
-                        sh 'http-server -p 4200 -c-1'
+                        //sh 'http-server -p 4200 -c-1'
+                        sh 'npm install -g http-server'
+                // Démarrer le serveur http
+                        def serverProcess = sh(script: 'http-server -p 4200 -c-1', background: true)
+                // Attendre quelques secondes pour que le serveur démarre
+                        sleep 10
+                // Terminer le processus du serveur après le déploiement
+                        sh "kill $(lsof -t -i:4200)"
                     }
                 }
             }
