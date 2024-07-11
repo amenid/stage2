@@ -30,38 +30,29 @@ pipeline {
                 }
             }
         }
-        stage('Install Angular CLI') {
-    steps {
-        script {
-            sh 'npm install -g @angular/cli'
-        }
-    }
-}
-
 
         stage('Deploy Front') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            script {
-                dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                    // Installer Angular CLI si ce n'est pas déjà fait
-                    def angularInstalled = sh(script: 'if [ -x "$(command -v ng)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
-                    if (angularInstalled == "no") {
-                        sh 'npm install -g @angular/cli'
+            steps {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    script {
+                        dir("${WORKSPACE}/${FRONTEND_DIR}") {
+                            // Installer serve si ce n'est pas déjà fait
+                            def serveInstalled = sh(script: 'if [ -x "$(command -v serve)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
+                            if (serveInstalled == "no") {
+                                sh 'npm install -g serve'
+                            }
+
+                            // Exécuter serve pour déployer l'application front-end
+                            sh 'serve --host 0.0.0.0 --port 4200 &'
+                            sleep 10 // Attendez suffisamment de temps pour que serve démarre
+
+                            // Vérifier si le serveur est accessible
+                            sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
+                        }
                     }
-
-                    // Exécuter ng serve
-                    sh 'ng serve --host 0.0.0.0 --port 4200 &'
-                    sleep 30  // Attendez suffisamment de temps pour que ng serve démarre
-
-                    // Vérifier si le serveur est accessible
-                    sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
                 }
             }
         }
-    }
-}
-
 
         stage('Build Back') {
             steps {
@@ -82,7 +73,7 @@ pipeline {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh """
                                 if ! command -v pm2 > /dev/null 2>&1; then
-                                    sudo npm install pm2 -g
+                                    npm install pm2 -g
                                 fi
                                 dotnet restore
                                 pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
