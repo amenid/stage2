@@ -50,15 +50,15 @@ pipeline {
         }
     }
     post {
-        failure {
-           script {
+                failure {
+                    script {
                         currentBuild.result = 'FAILURE'
                         echo "Front-end deployment failed: Check server logs for details."
                         // Autres actions en cas d'échec
-                    }     }
-    }
-}
-
+                    }
+                }
+            }
+        }
 
         stage('Build Back') {
             steps {
