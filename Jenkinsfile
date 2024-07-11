@@ -32,25 +32,26 @@ pipeline {
         }
 
         stage('Deploy Front') {
-            steps {
-                script {
-                    dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                        // Vérifier si http-server est installé localement
-                        def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
-                        if (httpServerInstalled == "no") {
-                            // Installer http-server si ce n'est pas déjà fait
-                            sh 'npm install http-server --save-dev'
-                        }
-                        // Utiliser http-server installé localement
-                        sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
-                        // Attendre quelques secondes pour que le serveur démarre
-                        sleep 10
-                        // Vérifier que le serveur est accessible
-                        sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
-                    }
+    steps {
+        script {
+            dir("${WORKSPACE}/${FRONTEND_DIR}") { 
+                // Vérifier si http-server est installé localement
+                def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
+                if (httpServerInstalled == "no") {
+                    // Installer http-server si ce n'est pas déjà fait
+                    sh 'npm install http-server --save-dev'
                 }
+                // Utiliser http-server installé localement
+                sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
+                // Attendre quelques secondes pour que le serveur démarre
+                sleep 10
+                // Vérifier que le serveur est accessible
+                sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
             }
         }
+    }
+}
+
 
         stage('Build Back') {
             steps {
