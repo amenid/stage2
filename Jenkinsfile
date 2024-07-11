@@ -16,16 +16,16 @@ pipeline {
 
         stage('Build Front') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '3d7d28e9-ec73-4d55-9bcd-506e89e64964', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
                     script {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                             if (!fileExists('node_modules')) {
-                        sh 'npm install' 
-                    } else {
-                        echo ' npm install as node_modules directory already exists.'
-                    }
-                    sh 'npm run build' 
-                }
+                                sh 'npm install' 
+                            } else {
+                                echo 'npm install as node_modules directory already exists.'
+                            }
+                            sh 'npm run build' 
+                        }
                     }
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
 
         stage('Deploy Front') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '3d7d28e9-ec73-4d55-9bcd-506e89e64964', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
                     script {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") { 
                             def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
@@ -51,7 +51,7 @@ pipeline {
 
         stage('Build Back') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '3d7d28e9-ec73-4d55-9bcd-506e89e64964', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
                     script {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {  
                             sh 'dotnet build WebApplication1.sln'
@@ -63,7 +63,7 @@ pipeline {
 
         stage('Deploy Backend') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '3d7d28e9-ec73-4d55-9bcd-506e89e64964', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
                     script {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh """
