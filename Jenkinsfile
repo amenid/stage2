@@ -37,10 +37,6 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                            def npxInstalled = sh(script: 'if [ -x "$(command -v npx)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
-                            if (npxInstalled == "no") {
-                                sh 'npm install -g npx'
-                            }
                             def serveInstalled = sh(script: 'if [ -x "$(command -v serve)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
                             if (serveInstalled == "no") {
                                 sh 'npm install -g serve'
