@@ -41,7 +41,7 @@ pipeline {
                             if (serveInstalled == "no") {
                                 sh 'sudo npm install -g serve'
                             }
-                            sh 'npx serve --host 0.0.0.0 --port 4200 &'
+                            sh 'serve --host 0.0.0.0 --port 4200 &'
                             sleep 10
                             sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
                         }
@@ -69,7 +69,7 @@ pipeline {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh """
                                 if ! command -v pm2 > /dev/null 2>&1; then
-                                    sudo npm install pm2 -g
+                                    npm install pm2 -g
                                 fi
                                 dotnet restore
                                 pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
