@@ -37,24 +37,27 @@ pipeline {
         }
 
         stage('Deploy Front') {
-            steps {
-                script {
-                    dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                        // Install serve locally within the project directory (optional)
-                        // sh 'npm install serve'
-
-                        // Use the full path to npx if npx is not available globally
-                        sh '/home/ameni/.nvm/versions/node/v20.15.0/bin/npx serve --host 0.0.0.0 --port 4200 &'
-                        sleep 10
-                        sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
-                    }
-                }
-                catchError {
-                    echo "An error occurred in stage 'Deploy Front': ${error.message}"
-                    // Perform any additional error handling tasks (logging, notifications, etc.)
-                }
+    steps {
+        dir('/var/lib/jenkins/workspace/pipeline/ui2/todo') {
+            script {
+                echo "Starting front-end server..."
+                sh '/home/ameni/.nvm/versions/node/v20.15.0/bin/npx serve --host 0.0.0.0 --port 4200 &'
+                // Increase sleep time if needed
+                sleep time: 20, unit: 'SECONDS'
+                // Check if server is running
+                sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
             }
         }
+    }
+    post {
+        failure {
+            echo "Front-end deployment failed: Check server logs for details."
+            currentBuild.result = 'FAILURE'
+            // Additional actions for failure handling
+        }
+    }
+}
+
 
         stage('Build Back') {
             steps {
