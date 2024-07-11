@@ -51,10 +51,11 @@ pipeline {
     }
     post {
         failure {
-            echo "Front-end deployment failed: Check server logs for details."
-            currentBuild.result = 'FAILURE'
-            // Additional actions for failure handling
-        }
+           script {
+                        currentBuild.result = 'FAILURE'
+                        echo "Front-end deployment failed: Check server logs for details."
+                        // Autres actions en cas d'échec
+                    }     }
     }
 }
 
