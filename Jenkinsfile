@@ -3,28 +3,28 @@ pipeline {
 
     environment {
         FRONTEND_DIR = 'ui2/todo'
-        BACKEND_DIR = 'api/WebApplication1'     
+        BACKEND_DIR = 'api/WebApplication1'
         PROJECT_DIR = 'projettt/stage2'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
+                git branch: 'main', url: 'git@github.com:amenid/stage2.git'
             }
         }
 
         stage('Build Front') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
-                        dir("${WORKSPACE}/${FRONTEND_DIR}") { 
+                        dir("${WORKSPACE}/${FRONTEND_DIR}") {
                             if (!fileExists('node_modules')) {
-                                sh 'npm install' 
+                                sh 'npm install'
                             } else {
                                 echo 'npm install as node_modules directory already exists.'
                             }
-                            sh 'npm run build' 
+                            sh 'npm run build'
                         }
                     }
                 }
@@ -33,9 +33,9 @@ pipeline {
 
         stage('Deploy Front') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
-                        dir("${WORKSPACE}/${FRONTEND_DIR}") { 
+                        dir("${WORKSPACE}/${FRONTEND_DIR}") {
                             def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
                             if (httpServerInstalled == "no") {
                                 sh 'npm install http-server --save-dev'
@@ -51,9 +51,9 @@ pipeline {
 
         stage('Build Back') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
-                        dir("${WORKSPACE}/${BACKEND_DIR}") {  
+                        dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh 'dotnet build WebApplication1.sln'
                         }
                     }
@@ -63,7 +63,7 @@ pipeline {
 
         stage('Deploy Backend') {
             steps {
-                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'ameni', passwordVariable: 'ameni')]) {
+                withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         dir("${WORKSPACE}/${BACKEND_DIR}") {
                             sh """
