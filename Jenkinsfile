@@ -33,14 +33,15 @@ pipeline {
         stage('Deploy Front') {
             steps {
                 script {
-                    dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                       // sh 'serve --host 0.0.0.0 --port 4200 &'
-                        //sh 'npm install http-server'
-                        //sh 'http-server -p 4200 -c-1'
+                    dir("${WORKSPACE}/${FRONTEND_DIR}") {
+                        // Installer http-server si ce n'est pas déjà fait
                         sh 'npm install -g http-server'
+                        // Démarrer le serveur http
                         def serverProcess = sh(script: 'http-server -p 4200 -c-1', background: true)
-                        sleep 10   
-                        sh "kill $(lsof -t -i:4200)"
+                        // Attendre quelques secondes pour que le serveur démarre
+                        sleep 10
+                        // Terminer le processus du serveur après le déploiement
+                        sh "kill \$(lsof -t -i:4200)"
                     }
                 }
             }
@@ -67,6 +68,7 @@ pipeline {
                                 npm install pm2 -g
                             fi
                             dotnet restore
+                            dotnet build
                             pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
                         """
                     }
