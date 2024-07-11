@@ -41,7 +41,7 @@ pipeline {
                 // Démarrer le serveur http
                         def serverProcess = sh(script: 'http-server -p 4200 -c-1', background: true)
                 // Attendre quelques secondes pour que le serveur démarre
-                        sleep 10
+                        sleep 10   
                 // Terminer le processus du serveur après le déploiement
                         sh "kill $(lsof -t -i:4200)"
                     }
