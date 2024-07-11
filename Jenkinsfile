@@ -50,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Build Back') {
+        stage('Build Back') { 
             steps {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
