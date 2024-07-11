@@ -5,60 +5,54 @@ pipeline {
         SERVER_USER = 'ameni'
         SERVER_IP = '192.168.45.138'
         FRONTEND_DIR = 'ui2/todo'
-        BACKEND_DIR = 'api/WebApplication1'     
-        PROJECT_DIR = 'projettt/stage2'   
+        BACKEND_DIR = 'api/WebApplication1'
+        PROJECT_DIR = 'projettt/stage2'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'git@github.com:amenid/stage2.git' 
+                git branch: 'main', url: 'git@github.com:amenid/stage2.git'
             }
         }
 
         stage('Build Front') {
             steps {
                 script {
-                    dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                        sh 'ls -lrt'
-                        sh 'pwd'  
-                        env.PATH = "${env.PATH}:/home/ameni/.nvm/versions/node/v20.15.0/bin" 
-                        sh 'npm install' 
-                        sh 'npm run build' 
+                    dir("${WORKSPACE}/${FRONTEND_DIR}") {
+                        sh 'npm install'
+                        sh 'npm run build'
                         sh 'ls -lrt dist/todo' // Vérifiez le contenu du répertoire dist/todo
-                    } 
+                    }
                 }
             }
         }
 
         stage('Deploy Front') {
-    steps {
-        script {
-            dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-                // Vérifier si http-server est installé localement
-                def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
-                if (httpServerInstalled == "no") {
-                    // Installer http-server si ce n'est pas déjà fait
-                    sh 'npm install http-server --save-dev'
+            steps {
+                script {
+                    dir("${WORKSPACE}/${FRONTEND_DIR}") {
+                        // Vérifier si http-server est installé localement
+                        def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
+                        if (httpServerInstalled == "no") {
+                            // Installer http-server si ce n'est pas déjà fait
+                            sh 'npm install http-server --save-dev'
+                        }
+                        // Utiliser http-server installé localement
+                        sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
+                        // Attendre quelques secondes pour que le serveur démarre
+                        sleep 10
+                        // Vérifier que le serveur est accessible
+                        sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
+                    }
                 }
-                // Utiliser http-server installé localement
-                sh './node_modules/.bin/http-server dist/todo -p 4200 -c-1 &'
-                // Attendre quelques secondes pour que le serveur démarre
-                sleep 10
-                // Vérifier que le serveur est accessible
-                sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
             }
         }
-    }
-}
-
 
         stage('Build Back') {
             steps {
                 script {
-                    dir("${WORKSPACE}/${BACKEND_DIR}") {  
-                        sh 'ls -lrt'
-                        sh 'pwd'
+                    dir("${WORKSPACE}/${BACKEND_DIR}") {
                         sh 'dotnet build WebApplication1.sln'
                     }
                 }
