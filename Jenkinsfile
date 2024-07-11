@@ -6,7 +6,6 @@ pipeline {
         BACKEND_DIR = 'api/WebApplication1'
         PROJECT_DIR = 'projettt/stage2'
         NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
-
     }
 
     stages {
@@ -32,15 +31,12 @@ pipeline {
                 }
             }
         }
+
         stage('Deploy Front') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     script {
                         dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                            def serveInstalled = sh(script: 'if [ -x "$(command -v serve)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
-                            if (serveInstalled == "no") {
-                                sh 'npm install -g serve'
-                            }
                             // Utiliser npx pour démarrer serve sans l'installer globalement
                             sh 'npx serve --host 0.0.0.0 --port 4200 &'
                             sleep 10
@@ -50,8 +46,6 @@ pipeline {
                 }
             }
         }
-
-
 
         stage('Build Back') {
             steps {
