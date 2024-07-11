@@ -33,15 +33,17 @@ pipeline {
         stage('Deploy Front') {
             steps {
                 script {
-                    dir("${WORKSPACE}/${FRONTEND_DIR}") {
-                        // Installer http-server si ce n'est pas déjà fait
-                        sh 'npm install -g http-server'
-                        // Démarrer le serveur http
-                        def serverProcess = sh(script: 'http-server -p 4200 -c-1', background: true)
+                    dir("${WORKSPACE}/${FRONTEND_DIR}") { 
+                        // Vérifier si http-server est installé localement
+                        def httpServerInstalled = sh(script: 'if [ -x "$(command -v ./node_modules/.bin/http-server)" ]; then echo "yes"; else echo "no"; fi', returnStdout: true).trim()
+                        if (httpServerInstalled == "no") {
+                            // Installer http-server si ce n'est pas déjà fait
+                            sh 'npm install http-server --save-dev'
+                        }
+                        // Utiliser http-server installé localement
+                        sh './node_modules/.bin/http-server -p 4200 -c-1 dist &'
                         // Attendre quelques secondes pour que le serveur démarre
                         sleep 10
-                        // Terminer le processus du serveur après le déploiement
-                        sh "kill \$(lsof -t -i:4200)"
                     }
                 }
             }
