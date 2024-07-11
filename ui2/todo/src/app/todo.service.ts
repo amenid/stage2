@@ -10,6 +10,9 @@ export class TodoService {
 
   constructor(private http: HttpClient) {}
 
+getTodos(): Observable<any> {
+    return this.http.get(this.APIURL);
+  }
   getTasks(): Observable<any[]> {
     return this.http.get<any[]>(this.APIURL + 'get_tasks');
   }

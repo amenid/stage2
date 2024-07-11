@@ -21,7 +21,7 @@
   <div style="display: flex; margin-bottom: 10px">
     <input
       type="text"
-      [(ngModel)]="newTask"
+      [(ngModel)]="newtask"
       style="
         flex: 1;
         padding: 8px;
@@ -31,7 +31,7 @@
       "
     />
     <button
-      (click)="addTask()"
+      (click)="add_tasks()"
       style="
         padding: 8px 16px;
         margin-left: 10px;
@@ -67,7 +67,7 @@
     />
     <button
       *ngIf="editingTaskId === item.id"
-      (click)="updateTask(item.id)"
+      (click)="update_task(item.id)"
       style="
         padding: 6px 12px;
         border: none;
@@ -82,7 +82,7 @@
     </button>
     <button
       *ngIf="editingTaskId !== item.id"
-      (click)="startEditing(item.id, item.task)"
+      (click)="start_editing(item.id, item.task)"
       style="
         padding: 6px 12px;
         border: none;
@@ -93,10 +93,10 @@
         margin-right: 10px;
       "
     >
-      Edit
+      Edit .
     </button>
     <button
-      (click)="deleteTask(item.id)"
+      (click)="delete_tasks(item.id)"
       style="
         padding: 6px 12px;
         border: none;
