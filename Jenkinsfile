@@ -6,6 +6,7 @@ pipeline {
     BACKEND_DIR = 'api/WebApplication1'
     PROJECT_DIR = 'projettt/stage2'
     NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
+    APP_NAME = 'projettt'
   }
 
   stages {
@@ -51,7 +52,7 @@ pipeline {
         withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           script {
             dir("${WORKSPACE}/${BACKEND_DIR}") {
-              sh 'dotnet build WebApplication1.sln' // Replace with your build command
+              sh 'dotnet build WebApplication1.sln' 
             }
           }
         }
