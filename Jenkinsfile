@@ -37,14 +37,20 @@ pipeline {
     }
 
     stage('Deploy Front') {
-  steps {
-    script {
-        def process = sh 'serve --host 0.0.0.0 --port 4200'
+            steps {
+                script {
+                    // Check if port 4200 is available
+                    def freePort = checkPortAvailability(4200)
+                    if (freePort) {
+                        echo "Port 4200 is available. Starting front-end application..."
+                        sh "**YOUR_ACTUAL_START_COMMAND** --host 0.0.0.0 --port ${freePort}"
+                    } else {
+                        error "Port 4200 is not available. Failed to deploy front-end application."
+                    }
+                }
+            }
+        }
 
-     waitForApp "http://localhost:4200", timeout: 60, checkInterval: 5
-   }
-  }
-}
 
 
     stage('Build Back') {
