@@ -63,8 +63,10 @@ pipeline {
               pm2 describe proj > /dev/null 2>&1 && pm2 restart proj --update-env || pm2 start node --name proj -- start
             """
           }*/
-          echo "Testing PM2"
-          sh 'pm2 --version'
+                def pm2Path = '/home/ameni/.nvm/versions/node/v20.15.0/bin/pm2'
+                    
+                    // Exécuter pm2 --version
+                    sh "${pm2Path} --version"
         }
       }
     } 
