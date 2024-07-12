@@ -31,7 +31,6 @@ pipeline {
                 }
                 catchError {
                     echo "An error occurred in stage 'Build Front': ${error.message}"
-                    // Perform any additional error handling tasks (logging, notifications, etc.)
                 }
             }
         }
@@ -42,9 +41,7 @@ pipeline {
             script {
                 echo "Starting front-end server..."
                 sh '/home/ameni/.nvm/versions/node/v20.15.0/bin/npx serve --host 0.0.0.0 --port 4200 &'
-                // Increase sleep time if needed
                 sleep time: 20, unit: 'SECONDS'
-                // Check if server is running
                 sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
             }
         }
@@ -52,14 +49,13 @@ pipeline {
    post {
   failure {
     echo "Front-end deployment failed: Check server logs for details."
-    currentBuild.result = 'FAILURE' // Indented within the closure
-    // Additional actions for failure handling
+    currentBuild.result = 'FAILURE' 
   }
 }
 
             }
         }
-
+ 
         stage('Build Back') {
             steps {
                 withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
@@ -71,7 +67,6 @@ pipeline {
                 }
                 catchError {
                     echo "An error occurred in stage 'Build Back': ${error.message}"
-                    // Perform any additional error handling tasks (logging, notifications, etc.)
                 }
             }
         }
@@ -91,7 +86,6 @@ pipeline {
                 }
                 catchError {
                     echo "An error occurred in stage 'Deploy Backend': ${error.message}"
-                    // Perform any additional error handling tasks (logging, notifications, etc.)
                 }
             }
         }
