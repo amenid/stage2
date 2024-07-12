@@ -39,13 +39,13 @@ pipeline {
   steps {
     script {
       def buildDir = "${WORKSPACE}/${FRONTEND_DIR}/dist"
+      def deployDir = sh 'ssh -i ~/.ssh/id_rsa -p 4200 ameni@192.168.45.138 "cat \$DEPLOY_DIR"'
 
-      def deployDir = sh 'ssh -i ~/.ssh/id_rsa ameni@192.168.45.138 "cat \$DEPLOY_DIR"'
-
-      sh "scp -r ${buildDir}/* ameni@192.168.45.138:${deployDir}"
+      sh "scp -r ${buildDir}/* -P 4200 ameni@192.168.45.138:${deployDir}"
     }
   }
 }
+
 
 
     stage('Build Back') {
