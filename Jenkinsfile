@@ -39,7 +39,7 @@ pipeline {
     stage('Deploy Front') {
             steps {
                 script {
-                  def isPortFree = sh(returnStatus: true, script: 'netstat -atlpn | grep :4200').trim() == ''
+                  def isPortFree = sh(returnStatus: true, script: 'sudo netstat -atlpn | grep :4200').trim() == ''
 
                     if (isPortFree) {
                         echo "Port 4200 is available. Starting front-end application..."
