@@ -36,7 +36,7 @@ pipeline {
       }
     }
 
-  stage('Deploy Front') {
+    stage('Deploy Front') {
      steps {
             def sudoPassword = credentials('sudoPassword')
             def portCheckOutput = sh(returnStatus: true, script: '''
