@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: "${env.BRANCH_NAME}", url: 'git@github.com:amenid/stage2.git'
+                    git url: 'git@github.com:amenid/stage2.git'
             }
         }
 
