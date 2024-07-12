@@ -56,7 +56,8 @@ pipeline {
           dir("${WORKSPACE}/${BACKEND_DIR}") {
             sh """
               if ! command -v pm2 > /dev/null 2>&1; then
-                sudo npm install pm2 -g
+                npm uninstall pm2 -g || true
+                npm install pm2 -g --unsafe-perm
               fi
               dotnet restore
               pm2 describe proj > /dev/null 2>&1 && pm2 restart proj --update-env || pm2 start node --name proj -- start
