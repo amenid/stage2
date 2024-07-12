@@ -38,17 +38,20 @@ pipeline {
 
     stage('Deploy Front') {
             steps {
-                script {
-                  def isPortFree = sh(returnStatus: true, script: 'sudo netstat -atlpn | grep :4200').trim() == ''
+                def isPortFree = sh(returnStatus: true, script: '''
+                     echo "Enter sudo password (it will not be shown):"
+                            read -s password
+                            echo
+                            sudo -S netstat -atlpn | grep :4200
+                        ''', maskPassword: true)
 
-                    if (isPortFree) {
-                        echo "Port 4200 is available. Starting front-end application..."
-                        sh "ng serve --host 0.0.0.0 --port 4200"
-                    } else {
-                        error "Port 4200 is not available. Failed to deploy front-end application."
-                    }
+                        if (isPortFree.trim() == '') {
+                            echo "Port 4200 is available. Starting front-end application..."
+                            sh "ng serve --host 0.0.0.0 --port 4200"
+                        } else {
+                            error "Port 4200 is not available. Failed to deploy front-end application."
+                        }
 
-                }
             }
         }
 
