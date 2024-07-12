@@ -4,7 +4,6 @@ pipeline {
   environment {
     FRONTEND_DIR = 'ui2/todo'
     BACKEND_DIR = 'api/WebApplication1'
-    PROJECT_DIR = 'proj/stage2'
     NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
     APP_NAME = 'proj'
   }
@@ -68,24 +67,17 @@ pipeline {
     stage('Deploy Backend') {
                 steps {
                     script {
-                        dir("${WORKSPACE}/${BACKEND_DIR}") {
-                            sh '''
-                            if ! command -v pm2 > /dev/null 2>&1; then
-                            npm install pm2 -g
-                            fi
-                            dotnet restore
-
-                            APP_NAME="${env.APP_NAME ?: 'proj'}"  
-
-                            if pm2 describe $APP_NAME > /dev/null 2>&1; then
-                            pm2 restart $APP_NAME --update-env
-                            else
-                            pm2 start node --name $APP_NAME -- start
-                            fi
-                            '''
-
+                            dir("${WORKSPACE}/${BACKEND_DIR}") {
+                                sh """
+                                    if ! command -v pm2 > /dev/null 2>&1; then
+                                        npm install pm2 -g
+                                    fi
+                                    dotnet restore
+                                    dotnet build
+                                    pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
+                                """
+                            }
                         }
-                    }
                     catchError {
                         echo "An error occurred in stage 'Deploy Backend': ${error.message}"
                     }
