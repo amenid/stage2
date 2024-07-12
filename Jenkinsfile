@@ -63,33 +63,33 @@ pipeline {
       }
     }
   }
-  stage('Deploy Backend') {
-            steps {
-                script {
-                    dir("${WORKSPACE}/${BACKEND_DIR}") {
-                        sh '''
-if ! command -v pm2 > /dev/null 2>&1; then
-  npm install pm2 -g
-fi
-dotnet restore
+    stage('Deploy Backend') {
+                steps {
+                    script {
+                        dir("${WORKSPACE}/${BACKEND_DIR}") {
+                            sh '''
+                            if ! command -v pm2 > /dev/null 2>&1; then
+                            npm install pm2 -g
+                            fi
+                            dotnet restore
 
-APP_NAME="${env.APP_NAME ?: 'projettt'}"  # Use environment variable for app name
+                            APP_NAME="${env.APP_NAME ?: 'projettt'}"  # Use environment variable for app name
 
-if pm2 describe $APP_NAME > /dev/null 2>&1; then
-  pm2 restart $APP_NAME --update-env
-else
-  pm2 start node --name $APP_NAME -- start
-fi
-'''
+                            if pm2 describe $APP_NAME > /dev/null 2>&1; then
+                            pm2 restart $APP_NAME --update-env
+                            else
+                            pm2 start node --name $APP_NAME -- start
+                            fi
+                            '''
 
+                        }
+                    }
+                    catchError {
+                        echo "An error occurred in stage 'Deploy Backend': ${error.message}"
                     }
                 }
-                catchError {
-                    echo "An error occurred in stage 'Deploy Backend': ${error.message}"
-                }
             }
-        }
-    
+        
 
   post {
     failure {
