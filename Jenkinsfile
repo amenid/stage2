@@ -36,24 +36,24 @@ pipeline {
     }
 
     stage('Deploy Front') {
-      steps {
-        dir('/var/lib/jenkins/workspace/pipeline/ui2/todo') {
-          script {
-            echo "Starting front-end server..."
-            sh '/home/ameni/.nvm/versions/node/v20.15.0/bin/npx serve --host 0.0.0.0 --port 4200 &'
-            sleep time: 20, unit: 'SECONDS'
-            sh 'curl -I http://localhost:4200 || { echo "Server did not start"; exit 1; }'
-          }
-        }
-      }
-    }
+  steps {
+    script {
+      def buildDir = "${WORKSPACE}/${FRONTEND_DIR}/dist"
 
-    stage('Build Back') {  // Added missing step definition
+      def deployDir = sh 'ssh -i ~/.ssh/id_rsa ameni@192.168.45.138 "cat \$DEPLOY_DIR"'
+
+      sh "scp -r ${buildDir}/* ameni@192.168.45.138:${deployDir}"
+    }
+  }
+}
+
+
+    stage('Build Back') {
       steps {
         withCredentials([usernamePassword(credentialsId: '9c70db8f-05ef-41bd-af2b-d3748e3ceddb', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
           script {
             dir("${WORKSPACE}/${BACKEND_DIR}") {
-              sh 'dotnet build WebApplication1.sln'  // Replace with your build command
+              sh 'dotnet build WebApplication1.sln' // Replace with your build command
             }
           }
         }
@@ -63,19 +63,46 @@ pipeline {
       }
     }
   }
+  stage('Deploy Backend') {
+            steps {
+                script {
+                    dir("${WORKSPACE}/${BACKEND_DIR}") {
+                        sh '''
+if ! command -v pm2 > /dev/null 2>&1; then
+  npm install pm2 -g
+fi
+dotnet restore
+
+APP_NAME="${env.APP_NAME ?: 'projettt'}"  # Use environment variable for app name
+
+if pm2 describe $APP_NAME > /dev/null 2>&1; then
+  pm2 restart $APP_NAME --update-env
+else
+  pm2 start node --name $APP_NAME -- start
+fi
+'''
+
+                    }
+                }
+                catchError {
+                    echo "An error occurred in stage 'Deploy Backend': ${error.message}"
+                }
+            }
+        }
+    
 
   post {
     failure {
-      mail to: 'ameniaydiii@gmail.com',  // Replace with actual recipient email address
+      mail to: 'ameniaydiii@gmail.com', // Replace with actual recipient email address
         subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
         body: """
-        Stage '${currentBuild.stageName}' failed with message: ${error.message}
+          Stage '${currentBuild.stageName}' failed with message: ${error.message}
 
-        Build URL: ${currentBuild.absoluteUrl}
+          Build URL: ${currentBuild.absoluteUrl}
 
-        Additional details:
-        * Console log: ${currentBuild.rawBuildConsoleLog}
-        * Error stacktrace: ${error.stackTrace}
+          Additional details:
+          * Console log: ${currentBuild.rawBuildConsoleLog}
+          * Error stacktrace: ${error.stackTrace}
         """
     }
   }
