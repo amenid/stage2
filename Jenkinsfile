@@ -4,7 +4,6 @@ pipeline {
   environment {
     FRONTEND_DIR = 'ui2/todo'
     BACKEND_DIR = 'api/WebApplication1'
-    NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
   }
 
   stages {
@@ -28,21 +27,13 @@ pipeline {
             }
           }
         }
-        catchError {
-          echo "An error occurred in stage 'Build Front': ${error.message}"
-        }
       }
     }
 
     stage('Deploy Front') {
       steps {
-        script {
-          dir("${WORKSPACE}/${FRONTEND_DIR}") { 
-            sh 'ng serve --host 0.0.0.0 --port 4200 &'
-          }
-        }
-        catchError {
-          echo "An error occurred in stage 'Deploy Front': ${error.message}"
+        dir("${WORKSPACE}/${FRONTEND_DIR}") { 
+          sh 'ng serve --host 0.0.0.0 --port 4200 &'
         }
       }
     }
@@ -56,9 +47,6 @@ pipeline {
             }
           }
         }
-        catchError {
-          echo "An error occurred in stage 'Build Back': ${error.message}"
-        }
       }
     }
 
@@ -68,16 +56,12 @@ pipeline {
           dir("${WORKSPACE}/${BACKEND_DIR}") {
             sh """
               if ! command -v pm2 > /dev/null 2>&1; then
-                npm install pm2 -g
+                sudo npm install pm2 -g
               fi
               dotnet restore
-              dotnet build
               pm2 describe projettt > /dev/null 2>&1 && pm2 restart projettt --update-env || pm2 start node --name projettt -- start
             """
           }
-        }
-        catchError {
-          echo "An error occurred in stage 'Deploy Backend': ${error.message}"
         }
       }
     }
@@ -85,17 +69,17 @@ pipeline {
 
   post {
     failure {
-      mail to: 'ameniaydiii@gmail.com', 
-        subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
-        body: """
-          Stage '${currentBuild.stageName}' failed with message: ${error.message}
+      mail to: 'ameniaydiii@gmail.com',
+           subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
+           body: """
+           Stage '${currentBuild.stageName}' failed with message: ${error.message}
 
-          Build URL: ${currentBuild.absoluteUrl}
+           Build URL: ${currentBuild.absoluteUrl}
 
-          Additional details:
-          * Console log: ${currentBuild.rawBuildConsoleLog}
-          * Error stacktrace: ${error.stackTrace}
-        """
+           Additional details:
+           * Console log: ${currentBuild.rawBuildConsoleLog}
+           * Error stacktrace: ${error.stackTrace}
+           """
     }
   }
 }
