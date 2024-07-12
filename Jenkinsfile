@@ -38,9 +38,9 @@ pipeline {
     stage('Deploy Front') {
   steps {
     script {
-             def process = sh 'serve --host 0.0.0.0 --port 4200'
+        def process = sh 'serve --host 0.0.0.0 --port 4200'
 
-          waitForApp "http://localhost:4200", timeout: 60, checkInterval: 5
+     waitForApp "http://localhost:4200", timeout: 60, checkInterval: 5
    }
   }
 }
