@@ -51,26 +51,24 @@ pipeline {
     }
 
     stage('Deploy Backend') {
-      steps {
-        script {
-         /* dir("${WORKSPACE}/${BACKEND_DIR}") {
-            sh """
-              if ! command -v pm2 > /dev/null 2>&1; then
-                npm uninstall pm2 -g || true
-                npm install pm2 -g --unsafe-perm
-              fi
-              dotnet restore
-              pm2 describe proj > /dev/null 2>&1 && pm2 restart proj --update-env || pm2 start node --name proj -- start
-            """
-          }*/
-                def pm2Path = '/home/ameni/.nvm/versions/node/v20.15.0/bin/pm2'
-                    
-                    // Exécuter pm2 --version
+            steps {
+                script {
+                    def pm2Path = '/home/ameni/.nvm/versions/node/v20.15.0/bin/pm2'
+
                     sh "${pm2Path} --version"
+
+                    sh """
+                    if ! command -v pm2 > /dev/null 2>&1; then
+                        npm uninstall pm2 -g || true
+                        npm install pm2 -g --unsafe-perm
+                    fi
+                    """
+                    sh """
+                    pm2 describe proj > /dev/null 2>&1 && pm2 restart proj --update-env || pm2 start node --name proj -- start
+                    """
+                }
+            }
         }
-      }
-    } 
-  }
 
   post {
     failure {
