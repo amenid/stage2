@@ -36,16 +36,17 @@ pipeline {
       }
     }
 
-    stage('Deploy Front') {
+  stage('Deploy Front') {
   steps {
-    def sudoPassword = credentials('sudoPassword')  // Indented
-
+    def sudoPassword = credentials('sudoPassword')
     def portCheckOutput = sh(returnStatus: true, script: '''
       echo "Enter sudo password (it will not be shown):"
       read -s password
       echo
       sudo -S -u $sudoPassword.username netstat -atlpn | grep :4200
-    ''') }}
+    ''')
+  }
+}
 
 
 
