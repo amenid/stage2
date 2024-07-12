@@ -43,7 +43,7 @@ pipeline {
                     def freePort = checkPortAvailability(4200)
                     if (freePort) {
                         echo "Port 4200 is available. Starting front-end application..."
-                        sh "**YOUR_ACTUAL_START_COMMAND** --host 0.0.0.0 --port ${freePort}"
+                        sh "ng serve --host 0.0.0.0 --port ${freePort}"
                     } else {
                         error "Port 4200 is not available. Failed to deploy front-end application."
                     }
