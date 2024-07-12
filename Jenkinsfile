@@ -39,14 +39,15 @@ pipeline {
     stage('Deploy Front') {
             steps {
                 script {
-                    // Check if port 4200 is available
-                    def freePort = checkPortAvailability(4200)
-                    if (freePort) {
+                  def isPortFree = sh(returnStatus: true, script: 'netstat -atlpn | grep :4200').trim() == ''
+
+                    if (isPortFree) {
                         echo "Port 4200 is available. Starting front-end application..."
-                        sh "ng serve --host 0.0.0.0 --port ${freePort}"
+                        sh "ng serve --host 0.0.0.0 --port 4200"
                     } else {
                         error "Port 4200 is not available. Failed to deploy front-end application."
                     }
+
                 }
             }
         }
