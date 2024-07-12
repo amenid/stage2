@@ -62,7 +62,7 @@ pipeline {
         }
       }
     }
-  }
+  
     stage('Deploy Backend') {
                 steps {
                     script {
@@ -90,7 +90,7 @@ pipeline {
                 }
             }
         
-
+  }
      post {
         failure {
         mail to: 'ameniaydiii@gmail.com', // Replace with actual recipient email address
