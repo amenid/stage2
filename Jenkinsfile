@@ -4,9 +4,9 @@ pipeline {
   environment {
     FRONTEND_DIR = 'ui2/todo'
     BACKEND_DIR = 'api/WebApplication1'
-    PROJECT_DIR = 'projettt/stage2'
+    PROJECT_DIR = 'proj/stage2'
     NPM_CONFIG_CACHE = "${WORKSPACE}/.npm-cache"
-    APP_NAME = 'projettt'
+    APP_NAME = 'proj'
   }
 
   stages {
@@ -78,7 +78,7 @@ pipeline {
                             fi
                             dotnet restore
 
-                            APP_NAME="${env.APP_NAME ?: 'projettt'}"  
+                            APP_NAME="${env.APP_NAME ?: 'proj'}"  
 
                             if pm2 describe $APP_NAME > /dev/null 2>&1; then
                             pm2 restart $APP_NAME --update-env
@@ -98,7 +98,7 @@ pipeline {
   }
      post {
         failure {
-        mail to: 'ameniaydiii@gmail.com', // Replace with actual recipient email address
+        mail to: 'ameniaydiii@gmail.com', 
             subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
             body: """
             Stage '${currentBuild.stageName}' failed with message: ${error.message}
