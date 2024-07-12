@@ -91,19 +91,19 @@ pipeline {
             }
         
 
-  post {
-    failure {
-      mail to: 'ameniaydiii@gmail.com', // Replace with actual recipient email address
-        subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
-        body: """
-          Stage '${currentBuild.stageName}' failed with message: ${error.message}
+     post {
+        failure {
+        mail to: 'ameniaydiii@gmail.com', // Replace with actual recipient email address
+            subject: "Jenkins Stage Failed: ${currentBuild.fullDisplayName}",
+            body: """
+            Stage '${currentBuild.stageName}' failed with message: ${error.message}
 
-          Build URL: ${currentBuild.absoluteUrl}
+            Build URL: ${currentBuild.absoluteUrl}
 
-          Additional details:
-          * Console log: ${currentBuild.rawBuildConsoleLog}
-          * Error stacktrace: ${error.stackTrace}
-        """
+            Additional details:
+            * Console log: ${currentBuild.rawBuildConsoleLog}
+            * Error stacktrace: ${error.stackTrace}
+            """
+        }
     }
-  }
-}
+    }
