@@ -38,7 +38,10 @@ pipeline {
     stage('Deploy Front') {
   steps {
     script {
-     sh 'ng serve --host 0.0.0.0 --port 4200 &'    }
+             def process = sh 'serve --host 0.0.0.0 --port 4200'
+
+          waitForApp "http://localhost:4200", timeout: 60, checkInterval: 5
+   }
   }
 }
 
@@ -69,7 +72,7 @@ pipeline {
                             fi
                             dotnet restore
 
-                            APP_NAME="${env.APP_NAME ?: 'projettt'}"  # Use environment variable for app name
+                            APP_NAME="${env.APP_NAME ?: 'projettt'}"  
 
                             if pm2 describe $APP_NAME > /dev/null 2>&1; then
                             pm2 restart $APP_NAME --update-env
