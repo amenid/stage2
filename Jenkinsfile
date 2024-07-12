@@ -53,7 +53,7 @@ pipeline {
     stage('Deploy Backend') {
       steps {
         script {
-          dir("${WORKSPACE}/${BACKEND_DIR}") {
+         /* dir("${WORKSPACE}/${BACKEND_DIR}") {
             sh """
               if ! command -v pm2 > /dev/null 2>&1; then
                 npm uninstall pm2 -g || true
@@ -62,7 +62,9 @@ pipeline {
               dotnet restore
               pm2 describe proj > /dev/null 2>&1 && pm2 restart proj --update-env || pm2 start node --name proj -- start
             """
-          }
+          }*/
+          echo "Testing PM2"
+          pm2 --version
         }
       }
     } 
