@@ -64,7 +64,7 @@ pipeline {
             """
           }*/
           echo "Testing PM2"
-          pm2 --version
+          sh 'pm2 --version'
         }
       }
     } 
